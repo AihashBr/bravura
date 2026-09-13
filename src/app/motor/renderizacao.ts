@@ -13,7 +13,10 @@ export class Renderizacao {
     this.cena = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(75, largura / altura, 0.1, 1000);
     this.renderizador = new THREE.WebGLRenderer({ canvas, antialias: true });
-    this.renderizador.setSize(largura, altura);
+    // false = nao escrever width/height inline no canvas; assim o CSS
+    // continua no controle do tamanho visual e o canvas acompanha o
+    // container quando a tela muda de tamanho.
+    this.renderizador.setSize(largura, altura, false);
 
     this.adicionarIluminacaoPadrao();
   }
@@ -36,7 +39,7 @@ export class Renderizacao {
   redimensionar(largura: number, altura: number): void {
     this.camera.aspect = largura / altura;
     this.camera.updateProjectionMatrix();
-    this.renderizador.setSize(largura, altura);
+    this.renderizador.setSize(largura, altura, false);
   }
 
   renderizar(): void {
