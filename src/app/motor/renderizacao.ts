@@ -14,6 +14,15 @@ export class Renderizacao {
     this.camera = new THREE.PerspectiveCamera(75, largura / altura, 0.1, 1000);
     this.renderizador = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderizador.setSize(largura, altura);
+
+    this.adicionarIluminacaoPadrao();
+  }
+
+  private adicionarIluminacaoPadrao(): void {
+    const luzAmbiente = new THREE.HemisphereLight(0xffffff, 0x444444, 1.5);
+    const luzDirecional = new THREE.DirectionalLight(0xffffff, 2);
+    luzDirecional.position.set(5, 10, 7);
+    this.cena.add(luzAmbiente, luzDirecional);
   }
 
   adicionarObjeto(objeto: THREE.Object3D): void {
