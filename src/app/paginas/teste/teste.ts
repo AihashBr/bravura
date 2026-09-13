@@ -4,14 +4,17 @@ import { Fisica } from '../../motor/fisica';
 import { CameraPrimeiraPessoa } from '../../motor/camera-primeira-pessoa';
 import { Jogador } from '../../objetos/jogador';
 import { MapaTeste } from '../../objetos/mapas/mapa-teste';
+import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
+import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
 
 /**
  * Pagina que junta tudo: renderizacao, fisica, mapa de teste, jogador
- * (capsula) e camera em primeira pessoa, num unico loop de jogo.
+ * (capsula) e camera em primeira pessoa, num unico loop de jogo. So e
+ * possivel jogar em tela cheia e com a tela na horizontal.
  */
 @Component({
   selector: 'app-teste',
-  imports: [],
+  imports: [TelaCheia, OrientacaoHorizontal],
   templateUrl: './teste.html',
   styleUrl: './teste.scss',
 })
