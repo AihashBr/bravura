@@ -17,9 +17,14 @@ export interface Quaternio {
 export interface ObjetoBase {
   readonly id: string;
 
-  posicao: Vetor3;
-  escala: Vetor3;
-  rotacao: Quaternio;
+  obterPosicao(): Vetor3;
+  definirPosicao(posicao: Vetor3): void;
+
+  obterEscala(): Vetor3;
+  definirEscala(escala: Vetor3): void;
+
+  obterRotacao(): Quaternio;
+  definirRotacao(rotacao: Quaternio): void;
 
   atualizar(deltaTempo: number): void;
 
