@@ -1,14 +1,14 @@
 import * as THREE from 'three';
-import type Ammo from 'ammojs3';
-import { Fisica } from '../motor/fisica';
-import type { ObjetoBase, Quaternio, Vetor3 } from './objeto-base';
+import { Fisica } from '../../motor/fisica';
+import type { ObjetoBase, Quaternio, Vetor3 } from '../objeto-base';
 
 let proximoId = 0;
 
 /**
- * Mapa mais simples possivel: um plano estatico que serve de chao.
+ * Mapa de teste, o mais simples possivel: um plano estatico que serve
+ * de chao.
  */
-export class Mapa implements ObjetoBase {
+export class MapaTeste implements ObjetoBase {
   readonly id: string;
 
   private readonly malha: THREE.Mesh;
@@ -19,7 +19,7 @@ export class Mapa implements ObjetoBase {
     largura: number,
     profundidade: number,
   ) {
-    this.id = `mapa-${proximoId++}`;
+    this.id = `mapa-teste-${proximoId++}`;
 
     const geometria = new THREE.PlaneGeometry(largura, profundidade);
     const material = new THREE.MeshStandardMaterial({ color: 0x3a5f3a });

@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import type Ammo from 'ammojs3';
 import { Fisica } from '../motor/fisica';
 import { CameraPrimeiraPessoa } from '../motor/camera-primeira-pessoa';
 import { Analogico } from '../entrada/analogico';

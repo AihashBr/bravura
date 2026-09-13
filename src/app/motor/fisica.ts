@@ -1,19 +1,22 @@
-import type Ammo from 'ammojs3';
 import type { Quaternio, Vetor3 } from '../objetos/objeto-base';
 
 /**
  * Ponto único de acesso ao ammo.js (física) no jogo. Nenhum outro arquivo
- * deve importar `ammojs3` diretamente — tudo passa por aqui.
+ * deve depender de `ammojs3`/`Ammo` diretamente — tudo passa por aqui.
  *
- * Usa o build WebAssembly do ammo.js. O binário (`ammo.wasm.wasm`) é
- * servido como asset estático em `public/ammo/`.
+ * Usa o build WebAssembly do ammo.js. O binário (`ammo.wasm.wasm`) e o
+ * script que o carrega (`ammo.wasm.js`) são servidos como assets
+ * estáticos em `public/ammo/` — o script é injetado como uma tag
+ * `<script>` clássica (não importado como módulo) porque seu código
+ * gerado pelo Emscripten tem um branch de Node.js (`require('fs')`)
+ * que o bundler não consegue resolver para o navegador.
  */
 export class Fisica {
   private ammo!: typeof Ammo;
   private mundo!: Ammo.btDiscreteDynamicsWorld;
 
   async inicializar(): Promise<void> {
-    const inicializarAmmo = (await import('ammojs3/dist/ammo.wasm.js')).default;
+    const inicializarAmmo = await this.carregarAmmo();
 
     this.ammo = await inicializarAmmo({
       locateFile: (caminho: string) => `/ammo/${caminho}`,
@@ -31,6 +34,20 @@ export class Fisica {
       configuracaoColisao,
     );
     this.mundo.setGravity(new this.ammo.btVector3(0, -9.8, 0));
+  }
+
+  private carregarAmmo(): Promise<typeof Ammo> {
+    if (typeof Ammo !== 'undefined') {
+      return Promise.resolve(Ammo);
+    }
+
+    return new Promise((resolver, rejeitar) => {
+      const script = document.createElement('script');
+      script.src = '/ammo/ammo.wasm.js';
+      script.onload = () => resolver(Ammo);
+      script.onerror = () => rejeitar(new Error('Falha ao carregar /ammo/ammo.wasm.js'));
+      document.head.appendChild(script);
+    });
   }
 
   criarFormaCaixa(semiLargura: number, semiAltura: number, semiProfundidade: number): Ammo.btBoxShape {
