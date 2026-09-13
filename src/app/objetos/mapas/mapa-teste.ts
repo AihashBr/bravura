@@ -22,7 +22,9 @@ export class MapaTeste implements ObjetoBase {
     this.id = `mapa-teste-${proximoId++}`;
 
     const geometria = new THREE.PlaneGeometry(largura, profundidade);
-    const material = new THREE.MeshStandardMaterial({ color: 0x3a5f3a });
+    const material = new THREE.MeshStandardMaterial({
+      map: this.criarTexturaQuadriculada(largura, profundidade),
+    });
     this.malha = new THREE.Mesh(geometria, material);
     this.malha.rotation.x = -Math.PI / 2;
 
@@ -34,6 +36,27 @@ export class MapaTeste implements ObjetoBase {
 
   obterMalha(): THREE.Object3D {
     return this.malha;
+  }
+
+  /** Textura quadriculada gerada por canvas, sem depender de nenhum asset de imagem. */
+  private criarTexturaQuadriculada(largura: number, profundidade: number): THREE.CanvasTexture {
+    const tamanhoQuadrado = 1;
+    const canvas = document.createElement('canvas');
+    canvas.width = 2;
+    canvas.height = 2;
+    const contexto = canvas.getContext('2d')!;
+    contexto.fillStyle = '#3a5f3a';
+    contexto.fillRect(0, 0, 2, 2);
+    contexto.fillStyle = '#2e4a2e';
+    contexto.fillRect(0, 0, 1, 1);
+    contexto.fillRect(1, 1, 1, 1);
+
+    const textura = new THREE.CanvasTexture(canvas);
+    textura.wrapS = THREE.RepeatWrapping;
+    textura.wrapT = THREE.RepeatWrapping;
+    textura.magFilter = THREE.NearestFilter;
+    textura.repeat.set(largura / (tamanhoQuadrado * 2), profundidade / (tamanhoQuadrado * 2));
+    return textura;
   }
 
   obterPosicao(): Vetor3 {
@@ -71,6 +94,8 @@ export class MapaTeste implements ObjetoBase {
   destruir(): void {
     this.fisica.removerCorpo(this.corpo);
     this.malha.geometry.dispose();
-    (this.malha.material as THREE.Material).dispose();
+    const material = this.malha.material as THREE.MeshStandardMaterial;
+    material.map?.dispose();
+    material.dispose();
   }
 }
