@@ -1,31 +1,22 @@
-import type Ammo from 'ammojs3';
-
-interface Vetor3 {
-  x: number;
-  y: number;
-  z: number;
-}
-
-interface Quaternio {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
+import type { Quaternio, Vetor3 } from '../objetos/objeto-base';
 
 /**
  * Ponto único de acesso ao ammo.js (física) no jogo. Nenhum outro arquivo
- * deve importar `ammojs3` diretamente — tudo passa por aqui.
+ * deve depender de `ammojs3`/`Ammo` diretamente — tudo passa por aqui.
  *
- * Usa o build WebAssembly do ammo.js. O binário (`ammo.wasm.wasm`) é
- * servido como asset estático em `public/ammo/`.
+ * Usa o build WebAssembly do ammo.js. O binário (`ammo.wasm.wasm`) e o
+ * script que o carrega (`ammo.wasm.js`) são servidos como assets
+ * estáticos em `public/ammo/` — o script é injetado como uma tag
+ * `<script>` clássica (não importado como módulo) porque seu código
+ * gerado pelo Emscripten tem um branch de Node.js (`require('fs')`)
+ * que o bundler não consegue resolver para o navegador.
  */
 export class Fisica {
   private ammo!: typeof Ammo;
   private mundo!: Ammo.btDiscreteDynamicsWorld;
 
   async inicializar(): Promise<void> {
-    const inicializarAmmo = (await import('ammojs3/dist/ammo.wasm.js')).default;
+    const inicializarAmmo = await this.carregarAmmo();
 
     this.ammo = await inicializarAmmo({
       locateFile: (caminho: string) => `/ammo/${caminho}`,
@@ -45,12 +36,30 @@ export class Fisica {
     this.mundo.setGravity(new this.ammo.btVector3(0, -9.8, 0));
   }
 
+  private carregarAmmo(): Promise<typeof Ammo> {
+    if (typeof Ammo !== 'undefined') {
+      return Promise.resolve(Ammo);
+    }
+
+    return new Promise((resolver, rejeitar) => {
+      const script = document.createElement('script');
+      script.src = '/ammo/ammo.wasm.js';
+      script.onload = () => resolver(Ammo);
+      script.onerror = () => rejeitar(new Error('Falha ao carregar /ammo/ammo.wasm.js'));
+      document.head.appendChild(script);
+    });
+  }
+
   criarFormaCaixa(semiLargura: number, semiAltura: number, semiProfundidade: number): Ammo.btBoxShape {
     return new this.ammo.btBoxShape(new this.ammo.btVector3(semiLargura, semiAltura, semiProfundidade));
   }
 
   criarFormaEsfera(raio: number): Ammo.btSphereShape {
     return new this.ammo.btSphereShape(raio);
+  }
+
+  criarFormaCapsula(raio: number, alturaCilindro: number): Ammo.btCapsuleShape {
+    return new this.ammo.btCapsuleShape(raio, alturaCilindro);
   }
 
   criarCorpoRigido(forma: Ammo.btCollisionShape, massa: number, posicao: Vetor3, rotacao?: Quaternio): Ammo.btRigidBody {
@@ -77,6 +86,36 @@ export class Fisica {
 
   removerCorpo(corpo: Ammo.btRigidBody): void {
     this.mundo.removeRigidBody(corpo);
+  }
+
+  definirVelocidadeLinear(corpo: Ammo.btRigidBody, velocidade: Vetor3): void {
+    corpo.setLinearVelocity(new this.ammo.btVector3(velocidade.x, velocidade.y, velocidade.z));
+  }
+
+  obterVelocidadeLinear(corpo: Ammo.btRigidBody): Vetor3 {
+    const velocidade = corpo.getLinearVelocity();
+    return { x: velocidade.x(), y: velocidade.y(), z: velocidade.z() };
+  }
+
+  definirTransformacaoCorpo(corpo: Ammo.btRigidBody, posicao: Vetor3, rotacao?: Quaternio): void {
+    const transformacao = new this.ammo.btTransform();
+    transformacao.setIdentity();
+    transformacao.setOrigin(new this.ammo.btVector3(posicao.x, posicao.y, posicao.z));
+    if (rotacao) {
+      transformacao.setRotation(new this.ammo.btQuaternion(rotacao.x, rotacao.y, rotacao.z, rotacao.w));
+    }
+    corpo.setCenterOfMassTransform(transformacao);
+    corpo.getMotionState().setWorldTransform(transformacao);
+  }
+
+  obterTransformacaoCorpo(corpo: Ammo.btRigidBody): { posicao: Vetor3; rotacao: Quaternio } {
+    const transformacao = corpo.getCenterOfMassTransform();
+    const origem = transformacao.getOrigin();
+    const rotacao = transformacao.getRotation();
+    return {
+      posicao: { x: origem.x(), y: origem.y(), z: origem.z() },
+      rotacao: { x: rotacao.x(), y: rotacao.y(), z: rotacao.z(), w: rotacao.w() },
+    };
   }
 
   atualizar(deltaTempo: number): void {
