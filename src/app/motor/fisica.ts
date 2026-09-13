@@ -6,7 +6,7 @@ interface Vetor3 {
   z: number;
 }
 
-interface Quatérnio {
+interface Quaternio {
   x: number;
   y: number;
   z: number;
@@ -20,7 +20,7 @@ interface Quatérnio {
  * Usa o build WebAssembly do ammo.js. O binário (`ammo.wasm.wasm`) é
  * servido como asset estático em `public/ammo/`.
  */
-export class Física {
+export class Fisica {
   private ammo!: typeof Ammo;
   private mundo!: Ammo.btDiscreteDynamicsWorld;
 
@@ -31,16 +31,16 @@ export class Física {
       locateFile: (caminho: string) => `/ammo/${caminho}`,
     });
 
-    const configuraçãoColisão = new this.ammo.btDefaultCollisionConfiguration();
-    const despachanteColisão = new this.ammo.btCollisionDispatcher(configuraçãoColisão);
+    const configuracaoColisao = new this.ammo.btDefaultCollisionConfiguration();
+    const despachanteColisao = new this.ammo.btCollisionDispatcher(configuracaoColisao);
     const fasesAmplas = new this.ammo.btDbvtBroadphase();
     const solucionador = new this.ammo.btSequentialImpulseConstraintSolver();
 
     this.mundo = new this.ammo.btDiscreteDynamicsWorld(
-      despachanteColisão,
+      despachanteColisao,
       fasesAmplas,
       solucionador,
-      configuraçãoColisão,
+      configuracaoColisao,
     );
     this.mundo.setGravity(new this.ammo.btVector3(0, -9.8, 0));
   }
@@ -53,22 +53,22 @@ export class Física {
     return new this.ammo.btSphereShape(raio);
   }
 
-  criarCorpoRígido(forma: Ammo.btCollisionShape, massa: number, posição: Vetor3, rotação?: Quatérnio): Ammo.btRigidBody {
-    const transformação = new this.ammo.btTransform();
-    transformação.setIdentity();
-    transformação.setOrigin(new this.ammo.btVector3(posição.x, posição.y, posição.z));
-    if (rotação) {
-      transformação.setRotation(new this.ammo.btQuaternion(rotação.x, rotação.y, rotação.z, rotação.w));
+  criarCorpoRigido(forma: Ammo.btCollisionShape, massa: number, posicao: Vetor3, rotacao?: Quaternio): Ammo.btRigidBody {
+    const transformacao = new this.ammo.btTransform();
+    transformacao.setIdentity();
+    transformacao.setOrigin(new this.ammo.btVector3(posicao.x, posicao.y, posicao.z));
+    if (rotacao) {
+      transformacao.setRotation(new this.ammo.btQuaternion(rotacao.x, rotacao.y, rotacao.z, rotacao.w));
     }
 
-    const inérciaLocal = new this.ammo.btVector3(0, 0, 0);
+    const inerciaLocal = new this.ammo.btVector3(0, 0, 0);
     if (massa > 0) {
-      forma.calculateLocalInertia(massa, inérciaLocal);
+      forma.calculateLocalInertia(massa, inerciaLocal);
     }
 
-    const estadoDeMovimento = new this.ammo.btDefaultMotionState(transformação);
-    const infoConstrução = new this.ammo.btRigidBodyConstructionInfo(massa, estadoDeMovimento, forma, inérciaLocal);
-    return new this.ammo.btRigidBody(infoConstrução);
+    const estadoDeMovimento = new this.ammo.btDefaultMotionState(transformacao);
+    const infoConstrucao = new this.ammo.btRigidBodyConstructionInfo(massa, estadoDeMovimento, forma, inerciaLocal);
+    return new this.ammo.btRigidBody(infoConstrucao);
   }
 
   adicionarCorpo(corpo: Ammo.btRigidBody): void {
