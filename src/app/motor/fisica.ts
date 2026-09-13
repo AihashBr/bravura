@@ -1,17 +1,5 @@
 import type Ammo from 'ammojs3';
-
-interface Vetor3 {
-  x: number;
-  y: number;
-  z: number;
-}
-
-interface Quaternio {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
-}
+import type { Quaternio, Vetor3 } from '../objetos/objeto-base';
 
 /**
  * Ponto único de acesso ao ammo.js (física) no jogo. Nenhum outro arquivo
