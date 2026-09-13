@@ -1,0 +1,10 @@
+<ng-content />
+
+@if (!emHorizontal()) {
+  <div class="aviso">
+    <div class="cartao">
+      <p>Vire a tela na horizontal para jogar.</p>
+      <button type="button" (click)="aplicar()">Aplicar</button>
+    </div>
+  </div>
+}

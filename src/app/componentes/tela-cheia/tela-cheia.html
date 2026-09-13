@@ -1,0 +1,10 @@
+<ng-content />
+
+@if (!emTelaCheia()) {
+  <div class="aviso">
+    <div class="cartao">
+      <p>É necessário jogar em tela cheia.</p>
+      <button type="button" (click)="aplicar()">Aplicar</button>
+    </div>
+  </div>
+}
