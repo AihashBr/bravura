@@ -9,10 +9,24 @@ import type { Vetor3 } from '../objetos/objeto-base';
  */
 export class CameraPrimeiraPessoa {
   private readonly controles: PointerLockControls;
+  private readonly sensibilidadeToque = 0.0035;
 
   constructor(camera: THREE.PerspectiveCamera, elemento: HTMLElement) {
     camera.rotation.order = 'YXZ';
     this.controles = new PointerLockControls(camera, elemento);
+  }
+
+  /**
+   * Gira a camera manualmente a partir de um delta em pixels (usado
+   * pelo toque, ja que o PointerLockControls so gira sozinho em
+   * resposta ao mouse travado). Livre em todas as direcoes, com o
+   * eixo vertical limitado pra nao virar de cabeca pra baixo.
+   */
+  girar(deltaX: number, deltaY: number): void {
+    const camera = this.controles.object;
+    camera.rotation.y -= deltaX * this.sensibilidadeToque;
+    camera.rotation.x -= deltaY * this.sensibilidadeToque;
+    camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
   }
 
   travar(): void {

@@ -3,6 +3,7 @@ import { Renderizacao } from '../../motor/renderizacao';
 import { Fisica } from '../../motor/fisica';
 import { CameraPrimeiraPessoa } from '../../motor/camera-primeira-pessoa';
 import { Jogador } from '../../objetos/jogador';
+import { Toque } from '../../entrada/toque';
 import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
@@ -56,6 +57,7 @@ export class Teste implements AfterViewInit, OnDestroy {
 
     this.cameraPrimeiraPessoa = new CameraPrimeiraPessoa(this.renderizacao.obterCamera(), tela);
     this.jogador.anexarCamera(this.cameraPrimeiraPessoa);
+    this.jogador.anexarToque(new Toque(tela));
 
     tela.addEventListener('click', this.aoClicar);
 
