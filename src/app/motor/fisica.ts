@@ -84,11 +84,20 @@ export class Fisica {
     this.mundo.addRigidBody(corpo);
   }
 
+  /** Impede o corpo de girar em X/Z (tombar) — só permite giro no eixo Y. Uso tipico: personagens. */
+  travarRotacaoXZ(corpo: Ammo.btRigidBody): void {
+    corpo.setAngularFactor(new this.ammo.btVector3(0, 1, 0));
+  }
+
   removerCorpo(corpo: Ammo.btRigidBody): void {
     this.mundo.removeRigidBody(corpo);
   }
 
   definirVelocidadeLinear(corpo: Ammo.btRigidBody, velocidade: Vetor3): void {
+    // corpos parados por tempo suficiente "dormem" no Bullet/Ammo, e
+    // setLinearVelocity sozinho nao acorda um corpo dormindo — sem
+    // isso o corpo simplesmente ignora a velocidade e fica parado.
+    corpo.activate(true);
     corpo.setLinearVelocity(new this.ammo.btVector3(velocidade.x, velocidade.y, velocidade.z));
   }
 
