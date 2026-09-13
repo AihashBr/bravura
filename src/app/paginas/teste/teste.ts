@@ -30,8 +30,8 @@ export class Teste implements AfterViewInit, OnDestroy {
   private idAnimacao = 0;
   private ultimoInstante = 0;
   private destruido = false;
+  private observadorRedimensionamento?: ResizeObserver;
 
-  private readonly aoRedimensionar = (): void => this.redimensionar();
   private readonly aoClicar = (): void => this.cameraPrimeiraPessoa.travar();
 
   async ngAfterViewInit(): Promise<void> {
@@ -58,7 +58,12 @@ export class Teste implements AfterViewInit, OnDestroy {
     this.jogador.anexarCamera(this.cameraPrimeiraPessoa);
 
     tela.addEventListener('click', this.aoClicar);
-    window.addEventListener('resize', this.aoRedimensionar);
+
+    // ResizeObserver cobre resize de janela, tela cheia e mudanca de
+    // orientacao com um so mecanismo, reagindo ao tamanho real do
+    // canvas em vez de depender de eventos especificos do navegador.
+    this.observadorRedimensionamento = new ResizeObserver(() => this.redimensionar());
+    this.observadorRedimensionamento.observe(tela);
 
     this.ultimoInstante = performance.now();
     this.animar(this.ultimoInstante);
@@ -78,13 +83,18 @@ export class Teste implements AfterViewInit, OnDestroy {
 
   private redimensionar(): void {
     const tela = this.telaRef.nativeElement;
-    this.renderizacao.redimensionar(tela.clientWidth, tela.clientHeight);
+    const largura = tela.clientWidth;
+    const altura = tela.clientHeight;
+    if (largura === 0 || altura === 0) {
+      return;
+    }
+    this.renderizacao.redimensionar(largura, altura);
   }
 
   ngOnDestroy(): void {
     this.destruido = true;
     cancelAnimationFrame(this.idAnimacao);
-    window.removeEventListener('resize', this.aoRedimensionar);
+    this.observadorRedimensionamento?.disconnect();
     this.telaRef.nativeElement.removeEventListener('click', this.aoClicar);
 
     this.jogador?.destruir();
