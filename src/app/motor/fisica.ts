@@ -41,6 +41,10 @@ export class Fisica {
     return new this.ammo.btSphereShape(raio);
   }
 
+  criarFormaCapsula(raio: number, alturaCilindro: number): Ammo.btCapsuleShape {
+    return new this.ammo.btCapsuleShape(raio, alturaCilindro);
+  }
+
   criarCorpoRigido(forma: Ammo.btCollisionShape, massa: number, posicao: Vetor3, rotacao?: Quaternio): Ammo.btRigidBody {
     const transformacao = new this.ammo.btTransform();
     transformacao.setIdentity();
@@ -65,6 +69,36 @@ export class Fisica {
 
   removerCorpo(corpo: Ammo.btRigidBody): void {
     this.mundo.removeRigidBody(corpo);
+  }
+
+  definirVelocidadeLinear(corpo: Ammo.btRigidBody, velocidade: Vetor3): void {
+    corpo.setLinearVelocity(new this.ammo.btVector3(velocidade.x, velocidade.y, velocidade.z));
+  }
+
+  obterVelocidadeLinear(corpo: Ammo.btRigidBody): Vetor3 {
+    const velocidade = corpo.getLinearVelocity();
+    return { x: velocidade.x(), y: velocidade.y(), z: velocidade.z() };
+  }
+
+  definirTransformacaoCorpo(corpo: Ammo.btRigidBody, posicao: Vetor3, rotacao?: Quaternio): void {
+    const transformacao = new this.ammo.btTransform();
+    transformacao.setIdentity();
+    transformacao.setOrigin(new this.ammo.btVector3(posicao.x, posicao.y, posicao.z));
+    if (rotacao) {
+      transformacao.setRotation(new this.ammo.btQuaternion(rotacao.x, rotacao.y, rotacao.z, rotacao.w));
+    }
+    corpo.setCenterOfMassTransform(transformacao);
+    corpo.getMotionState().setWorldTransform(transformacao);
+  }
+
+  obterTransformacaoCorpo(corpo: Ammo.btRigidBody): { posicao: Vetor3; rotacao: Quaternio } {
+    const transformacao = corpo.getCenterOfMassTransform();
+    const origem = transformacao.getOrigin();
+    const rotacao = transformacao.getRotation();
+    return {
+      posicao: { x: origem.x(), y: origem.y(), z: origem.z() },
+      rotacao: { x: rotacao.x(), y: rotacao.y(), z: rotacao.z(), w: rotacao.w() },
+    };
   }
 
   atualizar(deltaTempo: number): void {
