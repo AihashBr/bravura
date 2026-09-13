@@ -41,6 +41,7 @@ export class Jogador implements ObjetoBase {
     const forma = fisica.criarFormaCapsula(raio, alturaCilindro);
     this.corpo = fisica.criarCorpoRigido(forma, 70, posicaoInicial);
     fisica.adicionarCorpo(this.corpo);
+    fisica.travarRotacaoXZ(this.corpo);
   }
 
   anexarCamera(camera: CameraPrimeiraPessoa): void {
