@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@ang
 import { Renderizacao } from '../../motor/renderizacao';
 import { Fisica } from '../../motor/fisica';
 import { CameraPrimeiraPessoa } from '../../motor/camera-primeira-pessoa';
-import { Jogador } from '../../objetos/jogador';
+import { Jogador } from '../../objetos/personagens/jogador';
 import { Toque } from '../../entrada/toque';
 import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';

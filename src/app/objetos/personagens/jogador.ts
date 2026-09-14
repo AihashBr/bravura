@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { Fisica } from '../motor/fisica';
-import { CameraPrimeiraPessoa } from '../motor/camera-primeira-pessoa';
-import { Analogico } from '../entrada/analogico';
-import { Toque } from '../entrada/toque';
-import type { ObjetoBase, Quaternio, Vetor3 } from './objeto-base';
+import { Fisica } from '../../motor/fisica';
+import { CameraPrimeiraPessoa } from '../../motor/camera-primeira-pessoa';
+import { Analogico } from '../../entrada/analogico';
+import { Toque } from '../../entrada/toque';
+import type { ObjetoBase, Quaternio, Vetor3 } from '../objeto-base';
 
 let proximoId = 0;
 
