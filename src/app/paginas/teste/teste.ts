@@ -8,6 +8,7 @@ import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
 import { Configuracoes } from '../../componentes/configuracoes/configuracoes';
+import { BotaoPular } from '../../componentes/botao-pular/botao-pular';
 import { Preferencias } from '../../servicos/preferencias';
 
 /**
@@ -17,7 +18,7 @@ import { Preferencias } from '../../servicos/preferencias';
  */
 @Component({
   selector: 'app-teste',
-  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes],
+  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes, BotaoPular],
   templateUrl: './teste.html',
   styleUrl: './teste.scss',
 })
@@ -87,6 +88,10 @@ export class Teste implements AfterViewInit, OnDestroy {
     this.mapa.atualizar(deltaTempo);
     this.jogador.atualizar(deltaTempo);
     this.renderizacao.renderizar();
+  }
+
+  protected aoPular(): void {
+    this.jogador?.pular();
   }
 
   private redimensionar(): void {

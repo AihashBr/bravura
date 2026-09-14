@@ -1,0 +1,18 @@
+<button
+  type="button"
+  class="botao"
+  [class.editando]="modoEdicao()"
+  [style.left.%]="layout().x"
+  [style.top.%]="layout().y"
+  [style.transform]="'translate(-50%, -50%) scale(' + layout().escala + ')'"
+  (pointerdown)="aoPressionar($event)"
+>
+  <i class="bi bi-arrow-up-circle-fill"></i>
+</button>
+
+@if (modoEdicao()) {
+  <div class="controles-escala" [style.left.%]="layout().x" [style.top.%]="layout().y">
+    <button type="button" (pointerdown)="$event.stopPropagation()" (click)="diminuirEscala()">−</button>
+    <button type="button" (pointerdown)="$event.stopPropagation()" (click)="aumentarEscala()">+</button>
+  </div>
+}

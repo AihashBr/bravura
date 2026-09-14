@@ -22,6 +22,8 @@ export class Jogador implements ObjetoBase {
   private cameraPrimeiraPessoa: CameraPrimeiraPessoa | null = null;
 
   private readonly velocidadeDeslocamento = 4;
+  private readonly velocidadePulo = 5;
+  private readonly alturaRepouso: number;
 
   constructor(
     private readonly fisica: Fisica,
@@ -32,6 +34,7 @@ export class Jogador implements ObjetoBase {
     this.id = `jogador-${proximoId++}`;
 
     const alturaCilindro = Math.max(alturaTotal - raio * 2, 0);
+    this.alturaRepouso = raio + alturaCilindro / 2;
 
     const geometria = new THREE.CapsuleGeometry(raio, alturaCilindro, 8, 16);
     const material = new THREE.MeshStandardMaterial({ color: 0x2299ff });
@@ -50,6 +53,18 @@ export class Jogador implements ObjetoBase {
 
   anexarToque(toque: Toque): void {
     this.toque = toque;
+  }
+
+  /** So funciona se o jogador estiver perto do chao e nao subindo — evita pulo duplo no ar. */
+  pular(): void {
+    const posicao = this.fisica.obterTransformacaoCorpo(this.corpo).posicao;
+    const velocidade = this.fisica.obterVelocidadeLinear(this.corpo);
+    const estaNoChao = posicao.y <= this.alturaRepouso + 0.05 && velocidade.y <= 0.05;
+    if (!estaNoChao) {
+      return;
+    }
+
+    this.fisica.definirVelocidadeLinear(this.corpo, { x: velocidade.x, y: this.velocidadePulo, z: velocidade.z });
   }
 
   obterMalha(): THREE.Object3D {
