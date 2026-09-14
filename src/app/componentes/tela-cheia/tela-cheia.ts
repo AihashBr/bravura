@@ -31,6 +31,12 @@ export class TelaCheia implements OnInit, OnDestroy {
   }
 
   private verificarTelaCheia(): boolean {
+    if (window.self !== window.top) {
+      // dentro de um iframe (ex: modo de teste com 4 telas) o estado
+      // de tela cheia da pagina que hospeda nunca aparece aqui, mesmo
+      // que ela esteja de fato em tela cheia — a checagem nao se aplica.
+      return true;
+    }
     return document.fullscreenElement !== null;
   }
 }
