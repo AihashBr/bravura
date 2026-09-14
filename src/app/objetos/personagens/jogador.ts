@@ -80,7 +80,7 @@ export class Jogador implements ObjetoBase {
     this.fisica.definirVelocidadeLinear(this.corpo, {
       x: (direcaoX * cosseno - direcaoY * seno) * this.velocidadeDeslocamento,
       y: velocidadeAtual.y,
-      z: (direcaoX * seno + direcaoY * cosseno) * this.velocidadeDeslocamento,
+      z: -(direcaoX * seno + direcaoY * cosseno) * this.velocidadeDeslocamento,
     });
 
     const transformacao = this.fisica.obterTransformacaoCorpo(this.corpo);
