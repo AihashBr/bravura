@@ -23,6 +23,7 @@ export class Jogador implements ObjetoBase {
 
   private readonly velocidadeDeslocamento = 4;
   private readonly velocidadePulo = 5;
+  private readonly alcanceTiro = 100;
   private readonly alturaRepouso: number;
 
   constructor(
@@ -65,6 +66,16 @@ export class Jogador implements ObjetoBase {
     }
 
     this.fisica.definirVelocidadeLinear(this.corpo, { x: velocidade.x, y: this.velocidadePulo, z: velocidade.z });
+  }
+
+  /** Lanca um raio na direcao pra onde a camera esta olhando. Retorna `null` sem camera anexada. */
+  atirar(): { atingiu: boolean; ponto: Vetor3 } | null {
+    if (!this.cameraPrimeiraPessoa) {
+      return null;
+    }
+    const origem = this.cameraPrimeiraPessoa.obterPosicao();
+    const direcao = this.cameraPrimeiraPessoa.obterDirecaoOlhar();
+    return this.fisica.lancarRaio(origem, direcao, this.alcanceTiro);
   }
 
   obterMalha(): THREE.Object3D {

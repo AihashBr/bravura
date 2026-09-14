@@ -4,4 +4,16 @@
   </app-orientacao-horizontal>
 </app-tela-cheia>
 <app-configuracoes />
-<app-botao-pular (pular)="aoPular()" />
+<app-menu-testes />
+<app-botao-acao
+  identificador="botao-pular"
+  icone="bi-arrow-up-circle-fill"
+  [layoutPadrao]="{ x: 85, y: 78, escala: 1 }"
+  (acionar)="aoPular()"
+/>
+<app-botao-acao
+  identificador="botao-atirar"
+  icone="bi-crosshair"
+  [layoutPadrao]="{ x: 68, y: 78, escala: 1 }"
+  (acionar)="aoAtirar()"
+/>

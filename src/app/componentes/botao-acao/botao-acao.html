@@ -7,7 +7,7 @@
   [style.transform]="'translate(-50%, -50%) scale(' + layout().escala + ')'"
   (pointerdown)="aoPressionar($event)"
 >
-  <i class="bi bi-arrow-up-circle-fill"></i>
+  <i class="bi" [class]="icone()"></i>
 </button>
 
 @if (modoEdicao()) {

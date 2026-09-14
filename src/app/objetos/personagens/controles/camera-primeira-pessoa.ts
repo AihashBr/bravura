@@ -64,6 +64,18 @@ export class CameraPrimeiraPessoa {
     this.controles.object.position.set(posicao.x, posicao.y, posicao.z);
   }
 
+  obterPosicao(): Vetor3 {
+    const posicao = this.controles.object.position;
+    return { x: posicao.x, y: posicao.y, z: posicao.z };
+  }
+
+  /** Vetor unitario pra onde a camera esta olhando, em 3D (inclui o eixo vertical). */
+  obterDirecaoOlhar(): Vetor3 {
+    const direcao = new THREE.Vector3();
+    this.controles.object.getWorldDirection(direcao);
+    return { x: direcao.x, y: direcao.y, z: direcao.z };
+  }
+
   descartar(): void {
     this.controles.dispose();
   }
