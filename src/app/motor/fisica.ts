@@ -127,6 +127,26 @@ export class Fisica {
     };
   }
 
+  /** Lanca um raio no mundo fisico. Usado, por exemplo, pra saber o que um tiro atingiu. */
+  lancarRaio(origem: Vetor3, direcao: Vetor3, distanciaMaxima: number): { atingiu: boolean; ponto: Vetor3 } {
+    const de = new this.ammo.btVector3(origem.x, origem.y, origem.z);
+    const para = new this.ammo.btVector3(
+      origem.x + direcao.x * distanciaMaxima,
+      origem.y + direcao.y * distanciaMaxima,
+      origem.z + direcao.z * distanciaMaxima,
+    );
+
+    const resultado = new this.ammo.ClosestRayResultCallback(de, para);
+    this.mundo.rayTest(de, para, resultado);
+
+    if (!resultado.hasHit()) {
+      return { atingiu: false, ponto: { x: 0, y: 0, z: 0 } };
+    }
+
+    const ponto = resultado.get_m_hitPointWorld();
+    return { atingiu: true, ponto: { x: ponto.x(), y: ponto.y(), z: ponto.z() } };
+  }
+
   atualizar(deltaTempo: number): void {
     this.mundo.stepSimulation(deltaTempo, 10);
   }

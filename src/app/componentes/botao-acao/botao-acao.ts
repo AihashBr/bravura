@@ -1,41 +1,47 @@
-import { Component, inject, output } from '@angular/core';
-import { Preferencias } from '../../servicos/preferencias';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { LayoutElementoUi, Preferencias } from '../../servicos/preferencias';
 
-const ID_ELEMENTO = 'botao-pular';
-const LAYOUT_PADRAO = { x: 85, y: 78, escala: 1 };
 const ESCALA_MINIMA = 0.5;
 const ESCALA_MAXIMA = 2;
 
 /**
- * Botao de pular na tela (touch/mouse). Posicao e escala vem do
- * layout salvo em Preferencias — fica fixo no canto ate o jogador
- * usar o modo de edicao de layout pra mover/redimensionar.
+ * Botao de acao generico na tela (pular, atirar, etc.). Qualquer
+ * botao de HUD que precise de posicao/escala configuraveis e do modo
+ * de edicao de layout usa esse componente, passando so o
+ * identificador, o icone e a posicao padrao — nao escreve essa
+ * logica de novo em cada botao.
  */
 @Component({
-  selector: 'app-botao-pular',
+  selector: 'app-botao-acao',
   imports: [],
-  templateUrl: './botao-pular.html',
-  styleUrl: './botao-pular.scss',
+  templateUrl: './botao-acao.html',
+  styleUrl: './botao-acao.scss',
 })
-export class BotaoPular {
+export class BotaoAcao {
   private readonly preferencias = inject(Preferencias);
 
-  protected readonly layout = this.preferencias.obterLayoutElemento(ID_ELEMENTO, LAYOUT_PADRAO);
+  readonly identificador = input.required<string>();
+  readonly icone = input.required<string>();
+  readonly layoutPadrao = input.required<LayoutElementoUi>();
+
+  protected readonly layout = computed(() =>
+    this.preferencias.obterLayoutElemento(this.identificador(), this.layoutPadrao())(),
+  );
   protected readonly modoEdicao = this.preferencias.modoEdicaoLayout;
 
-  readonly pular = output<void>();
+  readonly acionar = output<void>();
 
   protected aoPressionar(evento: PointerEvent): void {
     if (this.modoEdicao()) {
       this.iniciarArraste(evento);
       return;
     }
-    this.pular.emit();
+    this.acionar.emit();
   }
 
   protected aumentarEscala(): void {
     const atual = this.layout();
-    this.preferencias.definirLayoutElemento(ID_ELEMENTO, {
+    this.preferencias.definirLayoutElemento(this.identificador(), {
       ...atual,
       escala: Math.min(ESCALA_MAXIMA, atual.escala + 0.1),
     });
@@ -43,7 +49,7 @@ export class BotaoPular {
 
   protected diminuirEscala(): void {
     const atual = this.layout();
-    this.preferencias.definirLayoutElemento(ID_ELEMENTO, {
+    this.preferencias.definirLayoutElemento(this.identificador(), {
       ...atual,
       escala: Math.max(ESCALA_MINIMA, atual.escala - 0.1),
     });
@@ -55,7 +61,7 @@ export class BotaoPular {
     const aoMover = (movimento: PointerEvent): void => {
       const x = (movimento.clientX / window.innerWidth) * 100;
       const y = (movimento.clientY / window.innerHeight) * 100;
-      this.preferencias.definirLayoutElemento(ID_ELEMENTO, { ...this.layout(), x, y });
+      this.preferencias.definirLayoutElemento(this.identificador(), { ...this.layout(), x, y });
     };
 
     const aoSoltar = (): void => {

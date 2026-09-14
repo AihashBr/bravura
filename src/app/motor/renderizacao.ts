@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import type { Vetor3 } from '../objetos/objeto-base';
 
 /**
  * Ponto único de acesso ao three.js no jogo. Nenhum outro arquivo deve
@@ -44,6 +45,21 @@ export class Renderizacao {
 
   renderizar(): void {
     this.renderizador.render(this.cena, this.camera);
+  }
+
+  /** Marca visualmente (por um instante) onde um tiro/raio atingiu algo. */
+  marcarImpacto(posicao: Vetor3, duracaoMs = 200): void {
+    const geometria = new THREE.SphereGeometry(0.05, 8, 8);
+    const material = new THREE.MeshBasicMaterial({ color: 0xff3333 });
+    const marcador = new THREE.Mesh(geometria, material);
+    marcador.position.set(posicao.x, posicao.y, posicao.z);
+    this.cena.add(marcador);
+
+    setTimeout(() => {
+      this.cena.remove(marcador);
+      geometria.dispose();
+      material.dispose();
+    }, duracaoMs);
   }
 
   obterCena(): THREE.Scene {

@@ -8,7 +8,7 @@ import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
 import { Configuracoes } from '../../componentes/configuracoes/configuracoes';
-import { BotaoPular } from '../../componentes/botao-pular/botao-pular';
+import { BotaoAcao } from '../../componentes/botao-acao/botao-acao';
 import { Preferencias } from '../../servicos/preferencias';
 
 /**
@@ -18,7 +18,7 @@ import { Preferencias } from '../../servicos/preferencias';
  */
 @Component({
   selector: 'app-teste',
-  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes, BotaoPular],
+  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes, BotaoAcao],
   templateUrl: './teste.html',
   styleUrl: './teste.scss',
 })
@@ -92,6 +92,13 @@ export class Teste implements AfterViewInit, OnDestroy {
 
   protected aoPular(): void {
     this.jogador?.pular();
+  }
+
+  protected aoAtirar(): void {
+    const resultado = this.jogador?.atirar();
+    if (resultado?.atingiu) {
+      this.renderizacao.marcarImpacto(resultado.ponto);
+    }
   }
 
   private redimensionar(): void {

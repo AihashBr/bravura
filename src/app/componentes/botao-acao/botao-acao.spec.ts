@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BotaoPular } from './botao-pular';
+import { BotaoAcao } from './botao-acao';
 
-describe('BotaoPular', () => {
-  let component: BotaoPular;
-  let fixture: ComponentFixture<BotaoPular>;
+describe('BotaoAcao', () => {
+  let component: BotaoAcao;
+  let fixture: ComponentFixture<BotaoAcao>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BotaoPular]
+      imports: [BotaoAcao]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BotaoPular);
+    fixture = TestBed.createComponent(BotaoAcao);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
