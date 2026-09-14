@@ -1,9 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Renderizacao } from '../../motor/renderizacao';
 import { Fisica } from '../../motor/fisica';
-import { CameraPrimeiraPessoa } from '../../motor/camera-primeira-pessoa';
-import { Jogador } from '../../objetos/jogador';
-import { Toque } from '../../entrada/toque';
+import { CameraPrimeiraPessoa } from '../../objetos/personagens/controles/camera-primeira-pessoa';
+import { Jogador } from '../../objetos/personagens/jogador';
+import { Toque } from '../../objetos/personagens/controles/toque';
 import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';

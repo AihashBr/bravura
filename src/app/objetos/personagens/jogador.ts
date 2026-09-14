@@ -1,23 +1,23 @@
 import * as THREE from 'three';
-import { Fisica } from '../motor/fisica';
-import { CameraPrimeiraPessoa } from '../motor/camera-primeira-pessoa';
-import { Analogico } from '../entrada/analogico';
-import { Toque } from '../entrada/toque';
-import type { ObjetoBase, Quaternio, Vetor3 } from './objeto-base';
+import { Fisica } from '../../motor/fisica';
+import { CameraPrimeiraPessoa } from './controles/camera-primeira-pessoa';
+import { Teclado } from './controles/teclado';
+import { Toque } from './controles/toque';
+import type { ObjetoBase, Quaternio, Vetor3 } from '../objeto-base';
 
 let proximoId = 0;
 
 /**
- * O jogador: uma capsula com fisica propria, movida pelo analogico
- * (teclado) e/ou por toque, e opcionalmente seguida por uma camera em
- * primeira pessoa.
+ * O jogador: uma capsula com fisica propria, movida pelo teclado
+ * e/ou por toque, e opcionalmente seguida por uma camera em primeira
+ * pessoa.
  */
 export class Jogador implements ObjetoBase {
   readonly id: string;
 
   private readonly malha: THREE.Mesh;
   private readonly corpo: Ammo.btRigidBody;
-  private readonly analogico = new Analogico();
+  private readonly teclado = new Teclado();
   private toque: Toque | null = null;
   private cameraPrimeiraPessoa: CameraPrimeiraPessoa | null = null;
 
@@ -62,7 +62,7 @@ export class Jogador implements ObjetoBase {
       this.cameraPrimeiraPessoa?.girar(deltaOlhar.x, deltaOlhar.y);
     }
 
-    const direcaoTeclado = this.analogico.obterDirecao();
+    const direcaoTeclado = this.teclado.obterDirecao();
     const direcaoToque = this.toque?.obterDirecaoMovimento() ?? { x: 0, y: 0 };
     let direcaoX = direcaoTeclado.x + direcaoToque.x;
     let direcaoY = direcaoTeclado.y + direcaoToque.y;
@@ -80,7 +80,7 @@ export class Jogador implements ObjetoBase {
     this.fisica.definirVelocidadeLinear(this.corpo, {
       x: (direcaoX * cosseno - direcaoY * seno) * this.velocidadeDeslocamento,
       y: velocidadeAtual.y,
-      z: (direcaoX * seno + direcaoY * cosseno) * this.velocidadeDeslocamento,
+      z: -(direcaoX * seno + direcaoY * cosseno) * this.velocidadeDeslocamento,
     });
 
     const transformacao = this.fisica.obterTransformacaoCorpo(this.corpo);
@@ -124,7 +124,7 @@ export class Jogador implements ObjetoBase {
   }
 
   destruir(): void {
-    this.analogico.descartar();
+    this.teclado.descartar();
     this.toque?.descartar();
     this.fisica.removerCorpo(this.corpo);
     this.malha.geometry.dispose();

@@ -8,7 +8,7 @@ export interface DirecaoAnalogica {
  * normalizada, como um analogico de controle. Unico ponto de acesso a
  * eventos de teclado de movimento no jogo.
  */
-export class Analogico {
+export class Teclado {
   private paraFrente = false;
   private paraTras = false;
   private paraEsquerda = false;
