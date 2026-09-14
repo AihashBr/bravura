@@ -1,0 +1,45 @@
+<button type="button" class="botao-engrenagem" (click)="alternar()" aria-label="Configurações">
+  <i class="bi bi-gear-fill"></i>
+</button>
+
+@if (aberto()) {
+  <div class="painel">
+    <div class="cabecalho">
+      <h2>Configurações</h2>
+      <button type="button" class="fechar" (click)="alternar()" aria-label="Fechar">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+
+    <div class="corpo">
+      <div class="abas">
+        <button
+          type="button"
+          class="aba"
+          [class.ativa]="abaAtiva() === 'controles'"
+          (click)="abaAtiva.set('controles')"
+        >
+          <i class="bi bi-controller"></i>
+          Controles
+        </button>
+      </div>
+
+      <div class="conteudo">
+        @if (abaAtiva() === 'controles') {
+          <label class="campo">
+            <span>Sensibilidade da câmera</span>
+            <input
+              type="range"
+              min="0.0005"
+              max="0.01"
+              step="0.0005"
+              [value]="sensibilidadeCamera()"
+              (input)="aoMudarSensibilidade($event)"
+            />
+            <span class="valor">{{ formatarSensibilidade() }}</span>
+          </label>
+        }
+      </div>
+    </div>
+  </div>
+}
