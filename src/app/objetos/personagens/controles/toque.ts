@@ -1,4 +1,4 @@
-import type { DirecaoAnalogica } from './analogico';
+import type { DirecaoAnalogica } from './teclado';
 
 /**
  * Controle por toque: a metade esquerda da tela move o personagem

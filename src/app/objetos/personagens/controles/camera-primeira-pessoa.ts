@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-import type { Vetor3 } from '../objetos/objeto-base';
+import type { Vetor3 } from '../../objeto-base';
 
 /**
  * Ponto único de acesso ao controle de camera em primeira pessoa. Usa o
