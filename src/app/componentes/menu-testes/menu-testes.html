@@ -1,0 +1,12 @@
+<button type="button" class="botao-menu" (click)="alternar()" aria-label="Menu de testes">
+  <i class="bi bi-bug-fill"></i>
+</button>
+
+@if (aberto()) {
+  <div class="menu">
+    <a routerLink="/testes/quatro-telas" class="opcao" (click)="alternar()">
+      <i class="bi bi-grid-3x3-gap"></i>
+      4 telas
+    </a>
+  </div>
+}

@@ -9,6 +9,7 @@ import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
 import { Configuracoes } from '../../componentes/configuracoes/configuracoes';
 import { BotaoAcao } from '../../componentes/botao-acao/botao-acao';
+import { MenuTestes } from '../../componentes/menu-testes/menu-testes';
 import { Preferencias } from '../../servicos/preferencias';
 
 /**
@@ -18,7 +19,7 @@ import { Preferencias } from '../../servicos/preferencias';
  */
 @Component({
   selector: 'app-teste',
-  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes, BotaoAcao],
+  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes, BotaoAcao, MenuTestes],
   templateUrl: './teste.html',
   styleUrl: './teste.scss',
 })
