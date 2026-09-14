@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import { Renderizacao } from '../../motor/renderizacao';
 import { Fisica } from '../../motor/fisica';
 import { CameraPrimeiraPessoa } from '../../objetos/personagens/controles/camera-primeira-pessoa';
@@ -7,6 +7,8 @@ import { Toque } from '../../objetos/personagens/controles/toque';
 import { MapaTeste } from '../../objetos/mapas/mapa-teste';
 import { TelaCheia } from '../../componentes/tela-cheia/tela-cheia';
 import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/orientacao-horizontal';
+import { Configuracoes } from '../../componentes/configuracoes/configuracoes';
+import { Preferencias } from '../../servicos/preferencias';
 
 /**
  * Pagina que junta tudo: renderizacao, fisica, mapa de teste, jogador
@@ -15,11 +17,13 @@ import { OrientacaoHorizontal } from '../../componentes/orientacao-horizontal/or
  */
 @Component({
   selector: 'app-teste',
-  imports: [TelaCheia, OrientacaoHorizontal],
+  imports: [TelaCheia, OrientacaoHorizontal, Configuracoes],
   templateUrl: './teste.html',
   styleUrl: './teste.scss',
 })
 export class Teste implements AfterViewInit, OnDestroy {
+  private readonly preferencias = inject(Preferencias);
+
   @ViewChild('tela', { static: true }) telaRef!: ElementRef<HTMLCanvasElement>;
 
   private renderizacao!: Renderizacao;
@@ -76,6 +80,8 @@ export class Teste implements AfterViewInit, OnDestroy {
 
     const deltaTempo = Math.min((instante - this.ultimoInstante) / 1000, 0.1);
     this.ultimoInstante = instante;
+
+    this.cameraPrimeiraPessoa.definirSensibilidade(this.preferencias.sensibilidadeCamera());
 
     this.fisica.atualizar(deltaTempo);
     this.mapa.atualizar(deltaTempo);

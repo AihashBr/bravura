@@ -8,12 +8,20 @@ import type { Vetor3 } from '../../objeto-base';
  * nenhuma). Nenhum outro arquivo deve importar essa lib diretamente.
  */
 export class CameraPrimeiraPessoa {
+  private static readonly SENSIBILIDADE_PADRAO = 0.0035;
+
   private readonly controles: PointerLockControls;
-  private readonly sensibilidadeToque = 0.0035;
+  private sensibilidade = CameraPrimeiraPessoa.SENSIBILIDADE_PADRAO;
 
   constructor(camera: THREE.PerspectiveCamera, elemento: HTMLElement) {
     camera.rotation.order = 'YXZ';
     this.controles = new PointerLockControls(camera, elemento);
+  }
+
+  /** Afeta tanto o giro por mouse (PointerLockControls) quanto por toque. */
+  definirSensibilidade(valor: number): void {
+    this.sensibilidade = valor;
+    this.controles.pointerSpeed = valor / CameraPrimeiraPessoa.SENSIBILIDADE_PADRAO;
   }
 
   /**
@@ -24,8 +32,8 @@ export class CameraPrimeiraPessoa {
    */
   girar(deltaX: number, deltaY: number): void {
     const camera = this.controles.object;
-    camera.rotation.y -= deltaX * this.sensibilidadeToque;
-    camera.rotation.x -= deltaY * this.sensibilidadeToque;
+    camera.rotation.y -= deltaX * this.sensibilidade;
+    camera.rotation.x -= deltaY * this.sensibilidade;
     camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
   }
 
