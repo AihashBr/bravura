@@ -105,22 +105,32 @@
   flex: 1;
   padding: 1.5rem;
   overflow-y: auto;
-}
-
-.campo {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+}
+
+.botao-editar-layout {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.375rem;
+  color: white;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.botao-editar-layout:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.dica {
   max-width: 360px;
-}
-
-.campo input[type='range'] {
-  width: 100%;
-}
-
-.valor {
-  align-self: flex-end;
+  font-size: 0.85rem;
   opacity: 0.7;
-  font-variant-numeric: tabular-nums;
+  margin: 0;
 }

@@ -8,20 +8,27 @@ import type { Vetor3 } from '../../objeto-base';
  * nenhuma). Nenhum outro arquivo deve importar essa lib diretamente.
  */
 export class CameraPrimeiraPessoa {
-  private static readonly SENSIBILIDADE_PADRAO = 0.0035;
+  /** Multiplicador de giro por toque (radianos/pixel) no topo do slider (sensibilidade = 1). */
+  private static readonly SENSIBILIDADE_MAXIMA = 0.01;
+  /** Sensibilidade de toque equivalente ao pointerSpeed=1 (padrao) do PointerLockControls. */
+  private static readonly SENSIBILIDADE_MOUSE_NORMAL = 0.0035;
 
   private readonly controles: PointerLockControls;
-  private sensibilidade = CameraPrimeiraPessoa.SENSIBILIDADE_PADRAO;
+  private sensibilidade = CameraPrimeiraPessoa.SENSIBILIDADE_MOUSE_NORMAL;
 
   constructor(camera: THREE.PerspectiveCamera, elemento: HTMLElement) {
     camera.rotation.order = 'YXZ';
     this.controles = new PointerLockControls(camera, elemento);
   }
 
-  /** Afeta tanto o giro por mouse (PointerLockControls) quanto por toque. */
-  definirSensibilidade(valor: number): void {
-    this.sensibilidade = valor;
-    this.controles.pointerSpeed = valor / CameraPrimeiraPessoa.SENSIBILIDADE_PADRAO;
+  /**
+   * Afeta tanto o giro por mouse (PointerLockControls) quanto por
+   * toque. `normalizada` vai de 0 a 1 — e a mesma escala usada pelo
+   * slider de configuracoes.
+   */
+  definirSensibilidade(normalizada: number): void {
+    this.sensibilidade = normalizada * CameraPrimeiraPessoa.SENSIBILIDADE_MAXIMA;
+    this.controles.pointerSpeed = this.sensibilidade / CameraPrimeiraPessoa.SENSIBILIDADE_MOUSE_NORMAL;
   }
 
   /**

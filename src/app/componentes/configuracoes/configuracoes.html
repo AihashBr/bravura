@@ -26,18 +26,26 @@
 
       <div class="conteudo">
         @if (abaAtiva() === 'controles') {
-          <label class="campo">
-            <span>Sensibilidade da câmera</span>
-            <input
-              type="range"
-              min="0.0005"
-              max="0.01"
-              step="0.0005"
-              [value]="sensibilidadeCamera()"
-              (input)="aoMudarSensibilidade($event)"
-            />
-            <span class="valor">{{ formatarSensibilidade() }}</span>
-          </label>
+          <app-controle-numerico
+            rotulo="Sensibilidade da câmera"
+            [minimo]="0"
+            [maximo]="1"
+            [passo]="0.01"
+            [valor]="preferencias.sensibilidadeCamera()"
+            (valorChange)="preferencias.definirSensibilidadeCamera($event)"
+          />
+
+          <button type="button" class="botao-editar-layout" (click)="preferencias.alternarModoEdicaoLayout()">
+            <i class="bi" [class.bi-check2]="preferencias.modoEdicaoLayout()" [class.bi-arrows-move]="!preferencias.modoEdicaoLayout()"></i>
+            {{ preferencias.modoEdicaoLayout() ? 'Concluir edição do layout' : 'Editar layout' }}
+          </button>
+
+          @if (preferencias.modoEdicaoLayout()) {
+            <p class="dica">
+              Arraste os elementos na tela do jogo pra reposicionar, e use os botões +/- pra
+              redimensionar. Feche essa tela pra ver o jogo e editar.
+            </p>
+          }
         }
       </div>
     </div>

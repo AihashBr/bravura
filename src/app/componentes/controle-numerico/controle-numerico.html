@@ -1,0 +1,22 @@
+<label class="campo">
+  <span class="rotulo">{{ rotulo() }}</span>
+  <div class="controles">
+    <input
+      type="range"
+      [min]="minimo()"
+      [max]="maximo()"
+      [step]="passo()"
+      [value]="valor()"
+      (input)="aoMudarSlider($event)"
+    />
+    <input
+      type="number"
+      class="numero"
+      [min]="minimo()"
+      [max]="maximo()"
+      [step]="passo()"
+      [value]="valor()"
+      (change)="aoMudarTexto($event)"
+    />
+  </div>
+</label>
